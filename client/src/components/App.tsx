@@ -47,14 +47,16 @@ const App: React.FC = () => {
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
             <a href="/login" className="group px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold rounded-xl hover:from-purple-500 hover:to-pink-500 transform hover:scale-105 transition-all duration-200 shadow-lg inline-block">
-                        <span className="flex items-center space-x-2">
-                            <span>Get Started</span>
-                            <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                        </span>
+              <span className="flex items-center space-x-2">
+                <span>Get Started</span>
+                <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </span>
             </a>
-            <button className="px-8 py-4 border border-gray-600 text-gray-300 font-semibold rounded-xl hover:border-gray-400 hover:text-white transition-all duration-200">
-              View Demo
-            </button>
+            <a href="/login/candidate" className="group px-8 py-4 border border-gray-600 text-gray-300 font-semibold rounded-xl hover:border-gray-400 hover:text-white transition-all duration-200">
+              <span className="flex items-center space-x-2">
+                <span>View Demo</span>
+              </span>
+            </a>
           </div>
 
           {/* Features Grid */}
@@ -111,12 +113,16 @@ const App: React.FC = () => {
               Join thousands of companies already using AI to build better teams and create more inclusive workplaces.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button className="px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold rounded-xl hover:from-purple-500 hover:to-pink-500 transform hover:scale-105 transition-all duration-200">
-                Start Free Trial
-              </button>
-              <button className="px-8 py-4 border border-gray-600 text-gray-300 font-semibold rounded-xl hover:border-gray-400 hover:text-white transition-all duration-200">
-                Schedule Demo
-              </button>
+              <a href="/login/candidate" className="group px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold rounded-xl hover:from-purple-500 hover:to-pink-500 transform hover:scale-105 transition-all duration-200 shadow-lg inline-block">
+                <span className="flex items-center space-x-2">
+                  <span>Start Free Trial</span>
+                </span>
+              </a>
+              <a href="/login/candidate" className="group px-8 py-4 border border-gray-600 text-gray-300 font-semibold rounded-xl hover:border-gray-400 hover:text-white transition-all duration-200">
+                <span className="flex items-center space-x-2">
+                  <span>Schedule Demo</span>
+                </span>
+              </a>
             </div>
           </div>
         </div>
