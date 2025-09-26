@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 
-const LoginPage: React.FC = () => {
+interface LoginPageProps {
+  user_role: 'candidate' | 'recruiter'
+}
+
+const LoginPage: React.FC<LoginPageProps> = ({ user_role = 'candidate' }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -8,7 +12,11 @@ const LoginPage: React.FC = () => {
     e.preventDefault();
     // логика логина, кинуть емаил и пароль на сервер
 
-    console.log('Attempting to log in with:', { email, password });
+    console.log('Attempting to log in with:', {
+      role: user_role,
+      email: email,
+      password: password
+    });
   };
 
   return (
@@ -49,8 +57,13 @@ const LoginPage: React.FC = () => {
             </button>
           </form>
           <div className="mt-4 text-sm">
-            <a href="#" className="text-white/80 hover:underline">
+            <a href="/placeholder" className="text-white/80 hover:underline">
               Forgot password?
+            </a>
+          </div>
+          <div className="mt-4 text-sm">
+            <a href="/placeholder" className="text-white/80 hover:underline">
+              Don't have an account? <span className="text-purple-400">Sign in</span>
             </a>
           </div>
         </div>
