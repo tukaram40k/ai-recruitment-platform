@@ -1,16 +1,22 @@
 import React, { useState } from 'react';
 
-interface LoginPageProps {
+interface SignupPageProps {
   user_role: 'candidate' | 'recruiter'
 }
 
-const LoginPage: React.FC<LoginPageProps> = ({ user_role = 'candidate' }) => {
+const SignupPage: React.FC<SignupPageProps> = ({ user_role = 'candidate' }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [password2, setPassword2] = useState('');
 
-  const handleLogin = (e: any) => {
+  const handleSignup = (e: any) => {
     e.preventDefault();
     // логика логина, кинуть емаил и пароль на сервер
+
+    if (password !== password2) {
+      alert('Passwords do not match!');
+      return;
+    }
 
     console.log('Attempting to log in with:', {
       role: user_role,
@@ -28,11 +34,18 @@ const LoginPage: React.FC<LoginPageProps> = ({ user_role = 'candidate' }) => {
         <div className="absolute -bottom-40 left-1/2 w-60 h-60 bg-blue-500 rounded-full mix-blend-multiply filter blur-xl opacity-50 animate-pulse" style={{ animationDelay: '4s' }}></div>
       </div>
 
-      {/* Login Card Container */}
+      {/* Signup Card Container */}
       <div className="z-10 w-full max-w-sm">
         <div className="bg-white/15 backdrop-blur-sm rounded-2xl p-8 shadow-lg text-center">
-          <h2 className="text-3xl font-bold mb-6 text-white">Log In</h2>
-          <form onSubmit={handleLogin} className="flex flex-col gap-4">
+          <h2 className="text-3xl font-bold mb-6 text-white">Sign Up</h2>
+          <form onSubmit={handleSignup} className="flex flex-col gap-4">
+            {/* Corporation name for admins */}
+            {user_role === 'recruiter' ? <input
+              type="text"
+              placeholder="Corporation name"
+              required
+              className="w-full px-4 py-3 rounded-xl bg-white/20 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-purple-500"
+            /> : null}
             <input
               type="email"
               value={email}
@@ -49,26 +62,29 @@ const LoginPage: React.FC<LoginPageProps> = ({ user_role = 'candidate' }) => {
               required
               className="w-full px-4 py-3 rounded-xl bg-white/20 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-purple-500"
             />
+            <input
+              type="password"
+              value={password2}
+              onChange={(e) => setPassword2(e.target.value)}
+              placeholder="Confirm password"
+              required
+              className="w-full px-4 py-3 rounded-xl bg-white/20 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-purple-500"
+            />
             <button
               type="submit"
               className="mt-4 w-full px-6 py-3 bg-purple-600 text-white font-semibold rounded-xl hover:bg-purple-700 transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500"
             >
-              Log In
+              Sign In
             </button>
           </form>
-          <div className="mt-4 text-sm">
-            <a href="/placeholder" className="text-white/80 hover:underline">
-              Forgot password?
-            </a>
-          </div>
           { user_role === 'candidate' ? <div className="mt-4 text-sm">
-            <a href="/signup/candidate" className="text-white/80 hover:underline">
-              Don't have an account? <span className="text-purple-400">Sign up</span>
+            <a href="/login/candidate" className="text-white/80 hover:underline">
+              Already have an account? <span className="text-purple-400">Log in</span>
             </a>
           </div>
           : <div className="mt-4 text-sm">
-              <a href="/signup/recruiter" className="text-white/80 hover:underline">
-                Don't have an account? <span className="text-purple-400">Sign up</span>
+              <a href="/login/recruiter" className="text-white/80 hover:underline">
+                Already have an account? <span className="text-purple-400">Log in</span>
               </a>
             </div>
           }
@@ -78,4 +94,4 @@ const LoginPage: React.FC<LoginPageProps> = ({ user_role = 'candidate' }) => {
   );
 };
 
-export default LoginPage;
+export default SignupPage;
