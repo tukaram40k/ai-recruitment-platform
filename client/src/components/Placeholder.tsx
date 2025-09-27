@@ -1,5 +1,5 @@
 import React from 'react';
-import myGif from '../../public/amogus.gif';
+import myGif from '../assets/amogus.gif';
 
 const Placeholder: React.FC = () => {
   return (

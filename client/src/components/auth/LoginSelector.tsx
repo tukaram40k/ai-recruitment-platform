@@ -1,6 +1,6 @@
 import React from "react"
 
-const LoginPage: React.FC = () => {
+const LoginSelector: React.FC = () => {
   return (
     <div className="px-6 py-20 p-4 min-h-screen items-center justify-center bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
       {/* Header */}
@@ -46,4 +46,4 @@ const LoginPage: React.FC = () => {
   )
 }
 
-export default LoginPage;
+export default LoginSelector;
