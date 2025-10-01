@@ -63,7 +63,7 @@ const SignupPage: React.FC<SignupPageProps> = ({ user_role = 'candidate' }) => {
       setIsLoading(false);
 
       // как загрузится, редирект в персонал кабинет
-      navigate('/placeholder');
+      user_role === 'recruiter' ? navigate('/personal-cabinet/recruiter') : navigate('/personal-cabinet');
     }, 2000);
   };
 

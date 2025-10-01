@@ -52,7 +52,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ user_role = 'candidate' }) => {
       setIsLoading(false);
 
       // как загрузится, редирект в персонал кабинет
-      navigate('/placeholder');
+      user_role === 'recruiter' ? navigate('/personal-cabinet/recruiter') : navigate('/personal-cabinet');
     }, 2000);
   };
 
