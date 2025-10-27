@@ -1,0 +1,16 @@
+/home/fuckedupupd/hr-recruitment/hr-recruitment/src/main/java/hr/recruitment/HrRecruitmentApplication.java
+/home/fuckedupupd/hr-recruitment/hr-recruitment/src/main/java/hr/recruitment/controller/CandidateInterviewRequestController.java
+/home/fuckedupupd/hr-recruitment/hr-recruitment/src/main/java/hr/recruitment/controller/CandidateProfileController.java
+/home/fuckedupupd/hr-recruitment/hr-recruitment/src/main/java/hr/recruitment/controller/RecruiterController.java
+/home/fuckedupupd/hr-recruitment/hr-recruitment/src/main/java/hr/recruitment/dto/CandidateProfileDto.java
+/home/fuckedupupd/hr-recruitment/hr-recruitment/src/main/java/hr/recruitment/dto/NewInterviewRequestDto.java
+/home/fuckedupupd/hr-recruitment/hr-recruitment/src/main/java/hr/recruitment/dto/RecruiterCandidateViewDto.java
+/home/fuckedupupd/hr-recruitment/hr-recruitment/src/main/java/hr/recruitment/dto/UpdateCvDto.java
+/home/fuckedupupd/hr-recruitment/hr-recruitment/src/main/java/hr/recruitment/dto/UpdateInfoDto.java
+/home/fuckedupupd/hr-recruitment/hr-recruitment/src/main/java/hr/recruitment/model/Interview.java
+/home/fuckedupupd/hr-recruitment/hr-recruitment/src/main/java/hr/recruitment/model/User.java
+/home/fuckedupupd/hr-recruitment/hr-recruitment/src/main/java/hr/recruitment/model/enums/Role.java
+/home/fuckedupupd/hr-recruitment/hr-recruitment/src/main/java/hr/recruitment/repository/InterviewRepository.java
+/home/fuckedupupd/hr-recruitment/hr-recruitment/src/main/java/hr/recruitment/repository/UserRepository.java
+/home/fuckedupupd/hr-recruitment/hr-recruitment/src/main/java/hr/recruitment/service/InterviewService.java
+/home/fuckedupupd/hr-recruitment/hr-recruitment/src/main/java/hr/recruitment/service/UserService.java
