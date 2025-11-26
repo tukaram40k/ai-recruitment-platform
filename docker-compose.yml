@@ -1,0 +1,83 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  db:
+    image: postgres:15-alpine
+    container_name: recruitment_db
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-admin}
+      POSTGRES_DB: ${POSTGRES_DB:-recruitment_db}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - recruitment_network
+
+  # Python FastAPI Backend
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: recruitment_backend
+    environment:
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-admin}@db:5432/${POSTGRES_DB:-recruitment_db}
+      - SECRET_KEY=${SECRET_KEY}
+      - ALGORITHM=${ALGORITHM:-HS256}
+      - ACCESS_TOKEN_EXPIRE_MINUTES=${ACCESS_TOKEN_EXPIRE_MINUTES:-1440}
+      - NVIDIA_API_KEY=${NVIDIA_API_KEY}
+      - DEBUG=${DEBUG:-False}
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - recruitment_network
+    restart: unless-stopped
+
+  # React Frontend with Nginx
+  frontend:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    container_name: recruitment_frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - recruitment_network
+    restart: unless-stopped
+
+  # Database initialization (runs once)
+  db-init:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: recruitment_db_init
+    environment:
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-admin}@db:5432/${POSTGRES_DB:-recruitment_db}
+      - SECRET_KEY=${SECRET_KEY}
+      - NVIDIA_API_KEY=${NVIDIA_API_KEY}
+    command: python init_db.py
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - recruitment_network
+    restart: "no"
+
+volumes:
+  postgres_data:
+
+networks:
+  recruitment_network:
+    driver: bridge

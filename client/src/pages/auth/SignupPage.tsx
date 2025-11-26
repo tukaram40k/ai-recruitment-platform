@@ -1,70 +1,59 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router';
+import { useAuth } from '../../context/AuthContext';
 
 interface SignupPageProps {
   user_role: 'candidate' | 'recruiter'
 }
 
 const SignupPage: React.FC<SignupPageProps> = ({ user_role = 'candidate' }) => {
+  const [name, setName] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [password2, setPassword2] = useState<string>('');
-
-  // потом чё-то с этим сделать
-  // const [corpName, setCorpName] = useState<string>('');
-
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string>('');
 
-  // хук для редиректа
   const navigate = useNavigate();
+  const { register } = useAuth();
 
-  const handleSignup = (e: React.FormEvent) => {
+  const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // prevent submission if already loading
     if (isLoading) return;
 
     if (password !== password2) {
-      alert('Passwords do not match!');
+      setError('Passwords do not match!');
       return;
     }
 
-    const signupData = {
-      role: user_role,
-      email: email,
-      password: password,
-      // corp_name: corpName,
-    };
+    if (password.length < 6) {
+      setError('Password must be at least 6 characters long');
+      return;
+    }
 
     setIsLoading(true);
+    setError('');
 
-    /*
-    // TODO: нормальный феч сделать
-    fetch('/api/signup', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(signupData),
-    })
-      .then(response => response.json())
-      .then(data => {
-        console.log('Signup successful:', data);
-      })
-      .catch(error => {
-        console.error('Signup error:', error);
-      })
-      .finally(() => {
-        setIsLoading(false);
+    try {
+      await register({
+        name,
+        email,
+        password,
+        role: user_role === 'recruiter' ? 'ROLE_RECRUITER' : 'ROLE_CANDIDATE'
       });
-    */
 
-    // пока не подключили бэк, будет так
-    setTimeout(() => {
-      console.log('Data successfully sent to server (simulated 2s delay). Data:', signupData);
+      // Redirect based on user role
+      if (user_role === 'recruiter') {
+        navigate('/personal-cabinet/recruiter');
+      } else {
+        navigate('/personal-cabinet');
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Signup failed. Please try again.');
+    } finally {
       setIsLoading(false);
-
-      // как загрузится, редирект в персонал кабинет
-      user_role === 'recruiter' ? navigate('/personal-cabinet/recruiter') : navigate('/personal-cabinet');
-    }, 2000);
+    }
   };
 
   return (
@@ -80,14 +69,23 @@ const SignupPage: React.FC<SignupPageProps> = ({ user_role = 'candidate' }) => {
       <div className="z-10 w-full max-w-sm">
         <div className="bg-white/15 backdrop-blur-sm rounded-2xl p-8 shadow-lg text-center">
           <h2 className="text-3xl font-bold mb-6 text-white">Sign Up</h2>
+
+          {error && (
+            <div className="mb-4 p-3 bg-red-500/20 border border-red-500/50 rounded-xl text-red-200 text-sm">
+              {error}
+            </div>
+          )}
+
           <form onSubmit={handleSignup} className="flex flex-col gap-4">
-            {/* Corporation name for admins */}
-            {user_role === 'recruiter' ? <input
+            <input
               type="text"
-              placeholder="Corporation name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder={user_role === 'recruiter' ? 'Company / Your Name' : 'Full Name'}
               required
-              className="w-full px-4 py-3 rounded-xl bg-white/20 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-purple-500"
-            /> : null}
+              disabled={isLoading}
+              className="w-full px-4 py-3 rounded-xl bg-white/20 text-white placeholder-white/70 disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-purple-500"
+            />
             <input
               type="email"
               value={email}
@@ -116,7 +114,6 @@ const SignupPage: React.FC<SignupPageProps> = ({ user_role = 'candidate' }) => {
               className="w-full px-4 py-3 rounded-xl bg-white/20 text-white placeholder-white/70 disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-purple-500"
             />
 
-            {/* Submit Button with Loading Indicator */}
             <button
               type="submit"
               disabled={isLoading}
@@ -126,7 +123,6 @@ const SignupPage: React.FC<SignupPageProps> = ({ user_role = 'candidate' }) => {
             >
               {isLoading ? (
                 <div className="flex justify-center items-center space-x-2">
-                  {/* Throbber/Loading Spinner SVG */}
                   <svg
                     className="animate-spin h-5 w-5 text-white"
                     xmlns="http://www.w3.org/2000/svg"

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router';
+import { useAuth } from '../../context/AuthContext';
 
 interface LoginPageProps {
   user_role: 'candidate' | 'recruiter'
@@ -9,51 +10,33 @@ const LoginPage: React.FC<LoginPageProps> = ({ user_role = 'candidate' }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string>('');
 
-  // хук для редиректа
   const navigate = useNavigate();
+  const { login } = useAuth();
 
-  const handleLogin = (e: any) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // prevent submission if already loading
     if (isLoading) return;
 
-    const loginData = {
-      role: user_role,
-      email: email,
-      password: password
-    };
-
     setIsLoading(true);
+    setError('');
 
-    /*
-    // TODO: нормальный феч сделать
-    fetch('/api/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(loginData),
-    })
-      .then(response => response.json())
-      .then(data => {
-        console.log('Login successful:', data);
-      })
-      .catch(error => {
-        console.error('Login error:', error);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
-    */
+    try {
+      await login({ email, password });
 
-    // пока не подключили бэк, будет так
-    setTimeout(() => {
-      console.log('Data successfully sent to server (simulated 2s delay). Data:', loginData);
+      // Redirect based on user role
+      if (user_role === 'recruiter') {
+        navigate('/personal-cabinet/recruiter');
+      } else {
+        navigate('/personal-cabinet');
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Login failed. Please try again.');
+    } finally {
       setIsLoading(false);
-
-      // как загрузится, редирект в персонал кабинет
-      user_role === 'recruiter' ? navigate('/personal-cabinet/recruiter') : navigate('/personal-cabinet');
-    }, 2000);
+    }
   };
 
   return (
@@ -69,6 +52,13 @@ const LoginPage: React.FC<LoginPageProps> = ({ user_role = 'candidate' }) => {
       <div className="z-10 w-full max-w-sm">
         <div className="bg-white/15 backdrop-blur-sm rounded-2xl p-8 shadow-lg text-center">
           <h2 className="text-3xl font-bold mb-6 text-white">Log In</h2>
+
+          {error && (
+            <div className="mb-4 p-3 bg-red-500/20 border border-red-500/50 rounded-xl text-red-200 text-sm">
+              {error}
+            </div>
+          )}
+
           <form onSubmit={handleLogin} className="flex flex-col gap-4">
             <input
               type="email"
@@ -97,7 +87,6 @@ const LoginPage: React.FC<LoginPageProps> = ({ user_role = 'candidate' }) => {
             >
               {isLoading ? (
                 <div className="flex justify-center items-center space-x-2">
-                  {/* Throbber/Loading Spinner SVG */}
                   <svg
                     className="animate-spin h-5 w-5 text-white"
                     xmlns="http://www.w3.org/2000/svg"
