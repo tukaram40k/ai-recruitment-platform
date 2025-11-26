@@ -47,7 +47,7 @@ const InterviewResultPage: React.FC = () => {
     setIsLoading(true)
     try {
       const data = await api.getInterviewResult(parseInt(id))
-      setResult(data as InterviewResult)
+      setResult(data as unknown as InterviewResult)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load results')
     } finally {

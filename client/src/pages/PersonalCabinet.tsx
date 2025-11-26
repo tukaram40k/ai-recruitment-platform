@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router'
 import { Brain, User, Settings, LogOut, Plus, Calendar, TrendingUp, Search, Filter } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import api from '../services/api'
-import { Interview } from '../types'
+import type {Interview} from '../types'
 
 interface PersonalCabinetProps {
   user_role: 'candidate' | 'recruiter'
