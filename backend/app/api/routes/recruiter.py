@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.orm import Session
 from typing import List, Optional
+import json
 
 from ...core.database import get_db
 from ...core.security import get_current_user
@@ -109,6 +110,29 @@ def get_interview_details(
 
     user = db.query(User).filter(User.id == interview.user_id).first()
 
+    # Parse JSON fields for proper display
+    conversation = []
+    assessment = {}
+    candidate_info = {}
+
+    if interview.conversation:
+        try:
+            conversation = json.loads(interview.conversation)
+        except json.JSONDecodeError:
+            conversation = []
+
+    if interview.assessment:
+        try:
+            assessment = json.loads(interview.assessment)
+        except json.JSONDecodeError:
+            assessment = {}
+
+    if user.info:
+        try:
+            candidate_info = json.loads(user.info)
+        except json.JSONDecodeError:
+            candidate_info = {}
+
     return {
         "id": interview.id,
         "user_id": interview.user_id,
@@ -121,9 +145,9 @@ def get_interview_details(
         "candidate_name": user.name,
         "candidate_email": user.email,
         "candidate_cv": user.cv,
-        "candidate_info": user.info,
-        "conversation": interview.conversation,
-        "assessment": interview.assessment
+        "candidate_info": candidate_info,
+        "conversation": conversation,
+        "assessment": assessment
     }
 
 

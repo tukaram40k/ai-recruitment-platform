@@ -167,7 +167,7 @@ class InterviewSimulator:
         self.candidate_profile: Optional[str] = None
         self.job_info: Optional[Dict] = None
         self.questions_count = 0
-        self.max_questions = 8
+        self.max_questions = 5
 
     def initialize(self, candidate_cv: str, job_position: str, job_description: str = None):
         """Initialize interview session"""
@@ -210,7 +210,7 @@ Interview Flow:
 - Ask about their background and experience
 - Discuss relevant skills
 - Explore motivation for this role
-- End with next steps after {self.max_questions} questions
+- End with next steps after {self.max_questions} questions total (including the introduction)
 
 IMPORTANT: Only ask ONE question at a time. Wait for the candidate's response before asking the next question."""
 

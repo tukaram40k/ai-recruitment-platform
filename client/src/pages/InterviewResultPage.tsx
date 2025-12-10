@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router'
-import { Brain, ArrowLeft, Trophy, CheckCircle, AlertCircle, Star } from 'lucide-react'
+import { Brain, ArrowLeft, Trophy, CheckCircle, AlertCircle, Star, MessageSquare, User, Bot } from 'lucide-react'
 import api from '../services/api'
 
 interface Assessment {
@@ -214,6 +214,53 @@ const InterviewResultPage: React.FC = () => {
           <div className="bg-white/5 backdrop-blur-sm border border-gray-700 rounded-2xl p-6 mt-6">
             <h2 className="text-xl font-semibold text-white mb-4">Summary</h2>
             <p className="text-gray-300 leading-relaxed">{result.assessment.summary}</p>
+          </div>
+        )}
+
+        {/* Interview Transcript */}
+        {result.conversation && result.conversation.length > 0 && (
+          <div className="bg-white/5 backdrop-blur-sm border border-gray-700 rounded-2xl p-6 mt-6">
+            <h2 className="text-xl font-semibold text-white mb-6 flex items-center">
+              <MessageSquare className="w-5 h-5 text-purple-400 mr-2" />
+              Interview Transcript
+            </h2>
+            <div className="space-y-4 max-h-96 overflow-y-auto pr-2">
+              {result.conversation.map((message, index) => (
+                <div
+                  key={index}
+                  className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                >
+                  <div
+                    className={`flex items-start space-x-3 max-w-[85%] ${
+                      message.role === 'user' ? 'flex-row-reverse space-x-reverse' : ''
+                    }`}
+                  >
+                    <div
+                      className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
+                        message.role === 'user'
+                          ? 'bg-gradient-to-r from-purple-600 to-pink-600'
+                          : 'bg-gradient-to-r from-blue-600 to-purple-600'
+                      }`}
+                    >
+                      {message.role === 'user' ? (
+                        <User className="w-4 h-4 text-white" />
+                      ) : (
+                        <Bot className="w-4 h-4 text-white" />
+                      )}
+                    </div>
+                    <div
+                      className={`p-3 rounded-xl ${
+                        message.role === 'user'
+                          ? 'bg-purple-600/20 border border-purple-500/30'
+                          : 'bg-white/5 border border-gray-600'
+                      }`}
+                    >
+                      <p className="text-sm text-gray-200 whitespace-pre-wrap">{message.content}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         )}
 
