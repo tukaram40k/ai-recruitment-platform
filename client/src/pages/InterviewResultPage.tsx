@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router'
-import { ArrowLeft, MessageSquare, User, ChevronDown, ChevronUp } from 'lucide-react'
 import api from '../services/api'
 
 interface Assessment {
@@ -59,7 +58,7 @@ const InterviewResultPage: React.FC = () => {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
-        <div className="w-6 h-6 border-2 border-black border-t-transparent rounded-full animate-spin" />
+        <div className="w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin" />
       </div>
     )
   }
@@ -68,10 +67,10 @@ const InterviewResultPage: React.FC = () => {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
-          <p className="text-gray-600 mb-4">{error || 'Results not found'}</p>
+          <p className="text-sm text-neutral-500 mb-4">{error || 'Results not found'}</p>
           <button
             onClick={() => navigate('/personal-cabinet')}
-            className="text-black underline hover:no-underline"
+            className="text-sm text-black underline hover:no-underline"
           >
             Back to Dashboard
           </button>
@@ -82,69 +81,64 @@ const InterviewResultPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Header */}
-      <header className="border-b border-gray-200">
-        <div className="max-w-3xl mx-auto px-6 py-4 flex items-center gap-4">
+      <header className="border-b border-neutral-200">
+        <div className="max-w-2xl mx-auto px-6 py-4 flex items-center gap-3">
           <button
             onClick={() => navigate('/personal-cabinet')}
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            className="text-neutral-400 hover:text-black"
           >
-            <ArrowLeft className="w-5 h-5" />
+            &larr;
           </button>
           <div>
-            <h1 className="font-semibold text-black">{result.position}</h1>
-            {result.company && <p className="text-sm text-gray-500">{result.company}</p>}
+            <h1 className="text-sm font-medium">{result.position}</h1>
+            {result.company && <p className="text-xs text-neutral-400">{result.company}</p>}
           </div>
         </div>
       </header>
 
-      <main className="max-w-3xl mx-auto px-6 py-8">
-        {/* Score */}
-        <div className="text-center mb-12">
-          <div className="text-7xl font-light text-black mb-2">{result.score}</div>
-          <p className="text-gray-500 text-sm uppercase tracking-wide">Overall Score</p>
+      <main className="max-w-2xl mx-auto px-6 py-8">
+        <div className="text-center mb-10">
+          <div className="text-5xl font-normal mb-1">{result.score}</div>
+          <p className="text-xs text-neutral-400 uppercase tracking-wide">Overall Score</p>
           {result.assessment?.recommendation && (
-            <p className="mt-4 text-sm font-medium text-gray-700">
+            <p className="mt-3 text-sm text-neutral-600">
               {result.assessment.recommendation}
             </p>
           )}
         </div>
 
-        {/* Metrics */}
         {result.assessment && (
-          <div className="grid grid-cols-5 gap-4 mb-12">
+          <div className="grid grid-cols-5 gap-3 mb-10 text-center">
             {[
               { label: 'Skills', value: result.assessment.skills_match },
               { label: 'Culture', value: result.assessment.cultural_fit },
-              { label: 'Communication', value: result.assessment.communication },
-              { label: 'Motivation', value: result.assessment.motivation },
-              { label: 'Experience', value: result.assessment.experience_relevance },
+              { label: 'Comm', value: result.assessment.communication },
+              { label: 'Motiv', value: result.assessment.motivation },
+              { label: 'Exp', value: result.assessment.experience_relevance },
             ].map((metric) => (
-              <div key={metric.label} className="text-center">
-                <div className="text-2xl font-light text-black">{metric.value}</div>
-                <div className="text-xs text-gray-500 mt-1">{metric.label}</div>
+              <div key={metric.label}>
+                <div className="text-xl font-normal">{metric.value}</div>
+                <div className="text-xs text-neutral-400">{metric.label}</div>
               </div>
             ))}
           </div>
         )}
 
-        {/* Summary */}
         {result.assessment?.summary && (
           <div className="mb-8">
-            <h2 className="text-xs uppercase tracking-wide text-gray-500 mb-3">Summary</h2>
-            <p className="text-gray-700 leading-relaxed">{result.assessment.summary}</p>
+            <h2 className="text-xs text-neutral-400 uppercase tracking-wide mb-2">Summary</h2>
+            <p className="text-sm text-neutral-600 leading-relaxed">{result.assessment.summary}</p>
           </div>
         )}
 
-        {/* Strengths & Concerns */}
-        <div className="grid md:grid-cols-2 gap-8 mb-8">
+        <div className="grid md:grid-cols-2 gap-6 mb-8">
           {result.assessment?.strengths && result.assessment.strengths.length > 0 && (
             <div>
-              <h2 className="text-xs uppercase tracking-wide text-gray-500 mb-3">Strengths</h2>
-              <ul className="space-y-2">
+              <h2 className="text-xs text-neutral-400 uppercase tracking-wide mb-2">Strengths</h2>
+              <ul className="space-y-1.5">
                 {result.assessment.strengths.map((strength: string, index: number) => (
-                  <li key={index} className="text-gray-700 flex items-start gap-2">
-                    <span className="text-gray-400">+</span>
+                  <li key={index} className="text-sm text-neutral-600 flex items-start gap-2">
+                    <span className="text-neutral-300">+</span>
                     {strength}
                   </li>
                 ))}
@@ -154,11 +148,11 @@ const InterviewResultPage: React.FC = () => {
 
           {result.assessment?.concerns && result.assessment.concerns.length > 0 && (
             <div>
-              <h2 className="text-xs uppercase tracking-wide text-gray-500 mb-3">Areas to Improve</h2>
-              <ul className="space-y-2">
+              <h2 className="text-xs text-neutral-400 uppercase tracking-wide mb-2">Areas to Improve</h2>
+              <ul className="space-y-1.5">
                 {result.assessment.concerns.map((concern: string, index: number) => (
-                  <li key={index} className="text-gray-700 flex items-start gap-2">
-                    <span className="text-gray-400">-</span>
+                  <li key={index} className="text-sm text-neutral-600 flex items-start gap-2">
+                    <span className="text-neutral-300">-</span>
                     {concern}
                   </li>
                 ))}
@@ -167,32 +161,29 @@ const InterviewResultPage: React.FC = () => {
           )}
         </div>
 
-        {/* Transcript Toggle */}
         {result.conversation && result.conversation.length > 0 && (
-          <div className="border-t border-gray-200 pt-8">
+          <div className="border-t border-neutral-200 pt-6">
             <button
               onClick={() => setShowTranscript(!showTranscript)}
-              className="flex items-center gap-2 text-sm text-gray-600 hover:text-black transition-colors"
+              className="text-xs text-neutral-500 hover:text-black"
             >
-              <MessageSquare className="w-4 h-4" />
-              <span>Interview Transcript ({result.conversation.length} messages)</span>
-              {showTranscript ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+              {showTranscript ? 'Hide' : 'Show'} Transcript ({result.conversation.length})
             </button>
 
             {showTranscript && (
-              <div className="mt-6 space-y-6">
+              <div className="mt-5 space-y-4">
                 {result.conversation.map((message: { role: string; content: string }, index: number) => (
-                  <div key={index} className="flex gap-4">
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
-                      message.role === 'user' ? 'bg-black' : 'bg-gray-200'
+                  <div key={index} className="flex gap-3">
+                    <div className={`w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 text-xs ${
+                      message.role === 'user' ? 'bg-black text-white' : 'bg-neutral-100 text-neutral-500'
                     }`}>
-                      <User className={`w-4 h-4 ${message.role === 'user' ? 'text-white' : 'text-gray-600'}`} />
+                      {message.role === 'user' ? 'Y' : 'I'}
                     </div>
                     <div className="flex-1">
-                      <p className="text-xs text-gray-500 mb-1">
+                      <p className="text-xs text-neutral-400 mb-0.5">
                         {message.role === 'user' ? 'You' : 'Interviewer'}
                       </p>
-                      <p className="text-gray-700 leading-relaxed">{message.content}</p>
+                      <p className="text-sm text-neutral-600 leading-relaxed">{message.content}</p>
                     </div>
                   </div>
                 ))}
@@ -201,11 +192,10 @@ const InterviewResultPage: React.FC = () => {
           </div>
         )}
 
-        {/* Back Button */}
-        <div className="mt-12 pt-8 border-t border-gray-200">
+        <div className="mt-10 pt-6 border-t border-neutral-200">
           <button
             onClick={() => navigate('/personal-cabinet')}
-            className="w-full py-3 bg-black text-white text-sm font-medium hover:bg-gray-800 transition-colors"
+            className="w-full py-2.5 bg-black text-white text-sm hover:bg-neutral-800"
           >
             Back to Dashboard
           </button>

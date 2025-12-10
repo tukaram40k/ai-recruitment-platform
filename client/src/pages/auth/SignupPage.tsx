@@ -56,25 +56,25 @@ const SignupPage: React.FC<SignupPageProps> = ({ user_role = 'candidate' }) => {
   }
 
   return (
-    <div className="min-h-screen bg-white flex items-center justify-center px-6 py-12">
-      <div className="w-full max-w-sm">
+    <div className="min-h-screen bg-white flex items-center justify-center px-6 py-10">
+      <div className="w-full max-w-xs">
         <div className="text-center mb-8">
-          <a href="/" className="text-lg font-medium text-black">RecruitAI</a>
+          <a href="/" className="text-base font-medium tracking-tight">RecruitAI</a>
         </div>
 
-        <h1 className="text-2xl font-light text-black text-center mb-8">
-          {user_role === 'recruiter' ? 'Create recruiter account' : 'Create your account'}
+        <h1 className="text-xl font-normal text-center mb-8">
+          {user_role === 'recruiter' ? 'Create recruiter account' : 'Create account'}
         </h1>
 
         {error && (
-          <div className="mb-6 p-3 border border-red-200 bg-red-50 text-red-600 text-sm">
+          <div className="mb-5 p-3 border border-neutral-300 bg-neutral-50 text-sm text-neutral-600">
             {error}
           </div>
         )}
 
         <form onSubmit={handleSignup} className="space-y-4">
           <div>
-            <label className="block text-sm text-gray-600 mb-2">
+            <label className="block text-xs text-neutral-500 mb-1.5">
               {user_role === 'recruiter' ? 'Company / Name' : 'Full Name'}
             </label>
             <input
@@ -84,11 +84,11 @@ const SignupPage: React.FC<SignupPageProps> = ({ user_role = 'candidate' }) => {
               placeholder={user_role === 'recruiter' ? 'Acme Inc.' : 'John Doe'}
               required
               disabled={isLoading}
-              className="w-full px-4 py-3 border border-gray-300 text-sm focus:outline-none focus:border-black transition-colors disabled:bg-gray-50"
+              className="w-full px-3 py-2.5 border border-neutral-200 text-sm focus:outline-none focus:border-black disabled:bg-neutral-50"
             />
           </div>
           <div>
-            <label className="block text-sm text-gray-600 mb-2">Email</label>
+            <label className="block text-xs text-neutral-500 mb-1.5">Email</label>
             <input
               type="email"
               value={email}
@@ -96,11 +96,11 @@ const SignupPage: React.FC<SignupPageProps> = ({ user_role = 'candidate' }) => {
               placeholder={user_role === 'recruiter' ? 'hr@company.com' : 'you@example.com'}
               required
               disabled={isLoading}
-              className="w-full px-4 py-3 border border-gray-300 text-sm focus:outline-none focus:border-black transition-colors disabled:bg-gray-50"
+              className="w-full px-3 py-2.5 border border-neutral-200 text-sm focus:outline-none focus:border-black disabled:bg-neutral-50"
             />
           </div>
           <div>
-            <label className="block text-sm text-gray-600 mb-2">Password</label>
+            <label className="block text-xs text-neutral-500 mb-1.5">Password</label>
             <input
               type="password"
               value={password}
@@ -108,11 +108,11 @@ const SignupPage: React.FC<SignupPageProps> = ({ user_role = 'candidate' }) => {
               placeholder="••••••••"
               required
               disabled={isLoading}
-              className="w-full px-4 py-3 border border-gray-300 text-sm focus:outline-none focus:border-black transition-colors disabled:bg-gray-50"
+              className="w-full px-3 py-2.5 border border-neutral-200 text-sm focus:outline-none focus:border-black disabled:bg-neutral-50"
             />
           </div>
           <div>
-            <label className="block text-sm text-gray-600 mb-2">Confirm Password</label>
+            <label className="block text-xs text-neutral-500 mb-1.5">Confirm Password</label>
             <input
               type="password"
               value={password2}
@@ -120,19 +120,19 @@ const SignupPage: React.FC<SignupPageProps> = ({ user_role = 'candidate' }) => {
               placeholder="••••••••"
               required
               disabled={isLoading}
-              className="w-full px-4 py-3 border border-gray-300 text-sm focus:outline-none focus:border-black transition-colors disabled:bg-gray-50"
+              className="w-full px-3 py-2.5 border border-neutral-200 text-sm focus:outline-none focus:border-black disabled:bg-neutral-50"
             />
           </div>
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full py-3 bg-black text-white text-sm font-medium hover:bg-gray-800 transition-colors disabled:bg-gray-400"
+            className="w-full py-2.5 bg-black text-white text-sm hover:bg-neutral-800 disabled:bg-neutral-300"
           >
             {isLoading ? 'Creating account...' : 'Create account'}
           </button>
         </form>
 
-        <div className="mt-6 text-center text-sm text-gray-500">
+        <div className="mt-6 text-center text-xs text-neutral-500">
           Already have an account?{' '}
           <a
             href={user_role === 'recruiter' ? '/login/recruiter' : '/login/candidate'}
@@ -143,8 +143,8 @@ const SignupPage: React.FC<SignupPageProps> = ({ user_role = 'candidate' }) => {
         </div>
 
         <div className="mt-4 text-center">
-          <a href="/login" className="text-sm text-gray-400 hover:text-gray-600">
-            ← Back to role selection
+          <a href="/login" className="text-xs text-neutral-400 hover:text-neutral-600">
+            &larr; Back to role selection
           </a>
         </div>
       </div>

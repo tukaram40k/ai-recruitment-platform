@@ -1,114 +1,100 @@
 import React from 'react'
-import { ArrowRight } from 'lucide-react'
 
 const App: React.FC = () => {
   return (
     <div className="min-h-screen bg-white">
-      {/* Header */}
-      <header className="border-b border-gray-200">
-        <div className="max-w-5xl mx-auto px-6 py-4 flex justify-between items-center">
-          <span className="text-lg font-medium text-black">RecruitAI</span>
-          <a
-            href="/login"
-            className="text-sm text-gray-600 hover:text-black transition-colors"
-          >
+      <header className="border-b border-neutral-200">
+        <div className="max-w-4xl mx-auto px-6 py-4 flex justify-between items-center">
+          <span className="text-base font-medium tracking-tight">RecruitAI</span>
+          <a href="/login" className="text-sm text-neutral-500 hover:text-black">
             Sign in
           </a>
         </div>
       </header>
 
-      {/* Hero */}
-      <main className="max-w-5xl mx-auto px-6">
-        <div className="py-24 md:py-32">
-          <h1 className="text-4xl md:text-6xl font-light text-black leading-tight mb-6">
-            AI-powered interviews<br />
-            for modern hiring
+      <main className="max-w-4xl mx-auto px-6">
+        <div className="py-20 md:py-28">
+          <h1 className="text-3xl md:text-5xl font-normal tracking-tight text-black leading-tight mb-5">
+            Interview smarter,<br />hire faster.
           </h1>
-          <p className="text-lg text-gray-600 max-w-xl mb-10">
-            Streamline your recruitment process with intelligent interview simulation.
-            Get objective assessments and find the right candidates faster.
+          <p className="text-base text-neutral-600 max-w-md mb-8 leading-relaxed">
+            AI-powered interview platform for objective candidate assessment and streamlined hiring.
           </p>
-          <div className="flex gap-4">
+          <div className="flex gap-3">
             <a
               href="/login/candidate"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-black text-white text-sm font-medium hover:bg-gray-800 transition-colors"
+              className="px-5 py-2.5 bg-black text-white text-sm hover:bg-neutral-800"
             >
               Start as Candidate
-              <ArrowRight className="w-4 h-4" />
             </a>
             <a
               href="/login/recruiter"
-              className="inline-flex items-center gap-2 px-6 py-3 border border-gray-300 text-sm font-medium hover:border-black transition-colors"
+              className="px-5 py-2.5 border border-neutral-300 text-sm hover:border-black"
             >
               Recruiter Portal
             </a>
           </div>
         </div>
 
-        {/* Features */}
-        <div className="border-t border-gray-200 py-16">
-          <div className="grid md:grid-cols-3 gap-12">
+        <div className="border-t border-neutral-200 py-14">
+          <div className="grid md:grid-cols-3 gap-10">
             <div>
-              <p className="text-sm text-gray-500 uppercase tracking-wide mb-3">01</p>
-              <h3 className="text-lg font-medium text-black mb-2">Smart Interviews</h3>
-              <p className="text-gray-600 text-sm leading-relaxed">
-                AI conducts natural conversations, asking relevant follow-up questions based on candidate responses.
+              <p className="text-xs text-neutral-400 mb-2">01</p>
+              <h3 className="text-sm font-medium mb-1">Smart Interviews</h3>
+              <p className="text-sm text-neutral-500 leading-relaxed">
+                Natural conversations with relevant follow-ups based on responses.
               </p>
             </div>
             <div>
-              <p className="text-sm text-gray-500 uppercase tracking-wide mb-3">02</p>
-              <h3 className="text-lg font-medium text-black mb-2">Objective Scoring</h3>
-              <p className="text-gray-600 text-sm leading-relaxed">
-                Get consistent evaluations across skills, communication, culture fit, and motivation.
+              <p className="text-xs text-neutral-400 mb-2">02</p>
+              <h3 className="text-sm font-medium mb-1">Objective Scoring</h3>
+              <p className="text-sm text-neutral-500 leading-relaxed">
+                Consistent evaluations across skills, communication, and fit.
               </p>
             </div>
             <div>
-              <p className="text-sm text-gray-500 uppercase tracking-wide mb-3">03</p>
-              <h3 className="text-lg font-medium text-black mb-2">Detailed Reports</h3>
-              <p className="text-gray-600 text-sm leading-relaxed">
-                Access full transcripts, strengths, concerns, and hiring recommendations for every interview.
+              <p className="text-xs text-neutral-400 mb-2">03</p>
+              <h3 className="text-sm font-medium mb-1">Detailed Reports</h3>
+              <p className="text-sm text-neutral-500 leading-relaxed">
+                Full transcripts with strengths, concerns, and recommendations.
               </p>
             </div>
           </div>
         </div>
 
-        {/* Stats */}
-        <div className="border-t border-gray-200 py-16">
-          <div className="grid grid-cols-3 gap-8">
-            <div className="text-center">
-              <p className="text-4xl font-light text-black">5 min</p>
-              <p className="text-sm text-gray-500 mt-2">Average interview time</p>
+        <div className="border-t border-neutral-200 py-14">
+          <div className="grid grid-cols-3 gap-6 text-center">
+            <div>
+              <p className="text-2xl font-normal">5 min</p>
+              <p className="text-xs text-neutral-400 mt-1">Avg interview</p>
             </div>
-            <div className="text-center">
-              <p className="text-4xl font-light text-black">85%</p>
-              <p className="text-sm text-gray-500 mt-2">Time saved on screening</p>
+            <div>
+              <p className="text-2xl font-normal">85%</p>
+              <p className="text-xs text-neutral-400 mt-1">Time saved</p>
             </div>
-            <div className="text-center">
-              <p className="text-4xl font-light text-black">24/7</p>
-              <p className="text-sm text-gray-500 mt-2">Available anytime</p>
+            <div>
+              <p className="text-2xl font-normal">24/7</p>
+              <p className="text-xs text-neutral-400 mt-1">Available</p>
             </div>
           </div>
         </div>
 
-        {/* CTA */}
-        <div className="border-t border-gray-200 py-16 text-center">
-          <h2 className="text-2xl font-light text-black mb-4">Ready to transform your hiring?</h2>
-          <p className="text-gray-600 mb-8">Start your first AI interview in minutes.</p>
+        <div className="border-t border-neutral-200 py-14 text-center">
+          <h2 className="text-xl font-normal mb-3">Ready to start?</h2>
+          <p className="text-sm text-neutral-500 mb-6">Begin your first interview in minutes.</p>
           <a
             href="/login"
-            className="inline-flex items-center gap-2 px-8 py-4 bg-black text-white text-sm font-medium hover:bg-gray-800 transition-colors"
+            className="inline-block px-6 py-2.5 bg-black text-white text-sm hover:bg-neutral-800"
           >
             Get Started
-            <ArrowRight className="w-4 h-4" />
           </a>
         </div>
       </main>
 
-      {/* Footer */}
-      <footer className="border-t border-gray-200">
-        <div className="max-w-5xl mx-auto px-6 py-8 flex justify-between items-center">
-          <span className="text-sm text-gray-500">RecruitAI</span>
-          <span className="text-sm text-gray-500">AI Interview Platform</span>
+      <footer className="border-t border-neutral-200">
+        <div className="max-w-4xl mx-auto px-6 py-6 flex justify-between items-center">
+          <span className="text-xs text-neutral-400">RecruitAI</span>
+          <span className="text-xs text-neutral-400">Interview Platform</span>
         </div>
       </footer>
     </div>
