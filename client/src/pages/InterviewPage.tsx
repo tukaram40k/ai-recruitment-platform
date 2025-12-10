@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { useParams, useNavigate } from 'react-router'
-import { Brain, Send, ArrowLeft, User, Bot } from 'lucide-react'
+import { ArrowLeft, Send, User } from 'lucide-react'
 import api from '../services/api'
-import { useAuth } from '../context/AuthContext'
 
 interface Message {
   role: 'user' | 'assistant'
@@ -12,7 +11,6 @@ interface Message {
 const InterviewPage: React.FC = () => {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
-  const { user } = useAuth()
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   const [messages, setMessages] = useState<Message[]>([])
@@ -20,7 +18,6 @@ const InterviewPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [isStarting, setIsStarting] = useState(true)
   const [isComplete, setIsComplete] = useState(false)
-  const [interviewInfo, setInterviewInfo] = useState<{ position: string; company?: string } | null>(null)
 
   useEffect(() => {
     if (id) {
@@ -42,7 +39,6 @@ const InterviewPage: React.FC = () => {
     setIsStarting(true)
     try {
       const result = await api.startInterview(parseInt(id))
-      setInterviewInfo({ position: 'Interview', company: undefined })
       setMessages([{ role: 'assistant', content: result.interviewer_message }])
       setIsComplete(result.is_complete)
     } catch (error) {
@@ -69,7 +65,7 @@ const InterviewPage: React.FC = () => {
       if (response.is_complete) {
         setTimeout(() => {
           navigate(`/interview/${id}/result`)
-        }, 3000)
+        }, 2000)
       }
     } catch (error) {
       console.error('Failed to send message:', error)
@@ -80,119 +76,101 @@ const InterviewPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex flex-col">
+    <div className="min-h-screen bg-white flex flex-col">
       {/* Header */}
-      <header className="px-6 py-4 border-b border-gray-700/50 backdrop-blur-sm">
-        <div className="max-w-4xl mx-auto flex justify-between items-center">
-          <div className="flex items-center space-x-4">
+      <header className="border-b border-gray-200 flex-shrink-0">
+        <div className="max-w-3xl mx-auto px-6 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-4">
             <button
               onClick={() => navigate('/personal-cabinet')}
-              className="p-2 text-gray-400 hover:text-white transition-colors"
+              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
             >
               <ArrowLeft className="w-5 h-5" />
             </button>
-            <div className="flex items-center space-x-2">
-              <Brain className="w-8 h-8 text-purple-400" />
-              <span className="text-xl font-bold text-white">AI Interview</span>
-            </div>
+            <h1 className="font-medium text-black">Interview</h1>
           </div>
           {isComplete && (
-            <span className="px-4 py-2 bg-green-500/20 text-green-400 rounded-full text-sm">
-              Interview Complete - Redirecting to results...
+            <span className="text-sm text-gray-500">
+              Complete — redirecting...
             </span>
           )}
         </div>
       </header>
 
-      {/* Chat Container */}
-      <div className="flex-1 max-w-4xl w-full mx-auto p-6 flex flex-col">
-        {isStarting ? (
-          <div className="flex-1 flex items-center justify-center">
-            <div className="text-center">
-              <div className="animate-spin h-12 w-12 border-4 border-purple-500 border-t-transparent rounded-full mx-auto mb-4"></div>
-              <p className="text-gray-300">Starting your interview...</p>
+      {/* Chat Area */}
+      <div className="flex-1 overflow-hidden">
+        <div className="max-w-3xl mx-auto h-full flex flex-col">
+          {isStarting ? (
+            <div className="flex-1 flex items-center justify-center">
+              <div className="text-center">
+                <div className="w-6 h-6 border-2 border-black border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+                <p className="text-gray-500 text-sm">Starting interview...</p>
+              </div>
             </div>
-          </div>
-        ) : (
-          <>
-            {/* Messages */}
-            <div className="flex-1 overflow-y-auto space-y-4 mb-4">
-              {messages.map((message, index) => (
-                <div
-                  key={index}
-                  className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
-                >
-                  <div
-                    className={`flex items-start space-x-3 max-w-[80%] ${
-                      message.role === 'user' ? 'flex-row-reverse space-x-reverse' : ''
-                    }`}
-                  >
-                    <div
-                      className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
-                        message.role === 'user'
-                          ? 'bg-gradient-to-r from-purple-600 to-pink-600'
-                          : 'bg-gradient-to-r from-blue-600 to-purple-600'
-                      }`}
-                    >
-                      {message.role === 'user' ? (
-                        <User className="w-5 h-5 text-white" />
-                      ) : (
-                        <Bot className="w-5 h-5 text-white" />
-                      )}
-                    </div>
-                    <div
-                      className={`p-4 rounded-2xl ${
-                        message.role === 'user'
-                          ? 'bg-purple-600/30 border border-purple-500/30'
-                          : 'bg-white/10 border border-gray-700'
-                      }`}
-                    >
-                      <p className="text-white whitespace-pre-wrap">{message.content}</p>
-                    </div>
-                  </div>
-                </div>
-              ))}
-
-              {isLoading && (
-                <div className="flex justify-start">
-                  <div className="flex items-start space-x-3">
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 flex items-center justify-center">
-                      <Bot className="w-5 h-5 text-white" />
-                    </div>
-                    <div className="p-4 rounded-2xl bg-white/10 border border-gray-700">
-                      <div className="flex space-x-2">
-                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+          ) : (
+            <>
+              {/* Messages */}
+              <div className="flex-1 overflow-y-auto px-6 py-6">
+                <div className="space-y-6">
+                  {messages.map((message, index) => (
+                    <div key={index} className="flex gap-4">
+                      <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
+                        message.role === 'user' ? 'bg-black' : 'bg-gray-200'
+                      }`}>
+                        <User className={`w-4 h-4 ${message.role === 'user' ? 'text-white' : 'text-gray-600'}`} />
+                      </div>
+                      <div className="flex-1 pt-1">
+                        <p className="text-xs text-gray-500 mb-1">
+                          {message.role === 'user' ? 'You' : 'Interviewer'}
+                        </p>
+                        <p className="text-gray-800 leading-relaxed">{message.content}</p>
                       </div>
                     </div>
-                  </div>
+                  ))}
+
+                  {isLoading && (
+                    <div className="flex gap-4">
+                      <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center flex-shrink-0">
+                        <User className="w-4 h-4 text-gray-600" />
+                      </div>
+                      <div className="flex-1 pt-1">
+                        <p className="text-xs text-gray-500 mb-1">Interviewer</p>
+                        <div className="flex gap-1">
+                          <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" />
+                          <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }} />
+                          <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }} />
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  <div ref={messagesEndRef} />
                 </div>
-              )}
+              </div>
 
-              <div ref={messagesEndRef} />
-            </div>
-
-            {/* Input Form */}
-            <form onSubmit={sendMessage} className="flex gap-4">
-              <input
-                type="text"
-                value={inputMessage}
-                onChange={(e) => setInputMessage(e.target.value)}
-                placeholder={isComplete ? 'Interview completed' : 'Type your response...'}
-                disabled={isLoading || isComplete}
-                className="flex-1 px-6 py-4 bg-white/10 border border-gray-700 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-purple-500 disabled:opacity-50"
-              />
-              <button
-                type="submit"
-                disabled={isLoading || isComplete || !inputMessage.trim()}
-                className="px-6 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl hover:from-purple-500 hover:to-pink-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                <Send className="w-5 h-5" />
-              </button>
-            </form>
-          </>
-        )}
+              {/* Input */}
+              <div className="flex-shrink-0 border-t border-gray-200 px-6 py-4">
+                <form onSubmit={sendMessage} className="flex gap-3">
+                  <input
+                    type="text"
+                    value={inputMessage}
+                    onChange={(e) => setInputMessage(e.target.value)}
+                    placeholder={isComplete ? 'Interview completed' : 'Type your response...'}
+                    disabled={isLoading || isComplete}
+                    className="flex-1 px-4 py-3 border border-gray-300 text-sm focus:outline-none focus:border-black transition-colors disabled:bg-gray-50 disabled:text-gray-400"
+                  />
+                  <button
+                    type="submit"
+                    disabled={isLoading || isComplete || !inputMessage.trim()}
+                    className="px-4 py-3 bg-black text-white hover:bg-gray-800 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
+                  >
+                    <Send className="w-5 h-5" />
+                  </button>
+                </form>
+              </div>
+            </>
+          )}
+        </div>
       </div>
     </div>
   )

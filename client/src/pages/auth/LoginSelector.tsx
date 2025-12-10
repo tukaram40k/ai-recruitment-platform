@@ -1,49 +1,53 @@
-import React from "react"
+import React from 'react'
+import { ArrowRight } from 'lucide-react'
 
 const LoginSelector: React.FC = () => {
   return (
-    <div className="px-6 py-20 p-4 min-h-screen items-center justify-center bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
-      {/* Header */}
-      <div className="max-w-4xl mx-auto text-center mb-8">
-        <h2 className="text-4xl font-bold text-white leading-tight">
-          You are a ...
-        </h2>
-      </div>
-      {/* Card Container */}
-      <div className="min-h-1 flex p-8 items-center justify-center">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-2xl">
-          {/* Candidate Card */}
-          <div className="bg-white/15 backdrop-blur-sm rounded-2xl p-8 flex flex-col items-center text-center">
-            <h3 className="text-2xl font-bold mb-4 text-white">Candidate</h3>
-            <p className="text-white/80 mb-6">
-              Find your next career opportunity and apply to jobs seamlessly.
-            </p>
-            <a href="/login/candidate" className="mt-auto px-6 py-3 bg-purple-600 text-white font-semibold rounded-xl hover:bg-purple-700 transition-colors">
-              Log In as Candidate
-            </a>
-          </div>
-
-          {/* Recruiter Card */}
-          <div className="bg-white/15 backdrop-blur-sm rounded-2xl p-8 flex flex-col items-center text-center">
-            <h3 className="text-2xl font-bold mb-4 text-white">Recruiter</h3>
-            <p className="text-white/80 mb-6">
-              Discover top talent and manage your hiring process with ease.
-            </p>
-            <a href="/login/recruiter" className="mt-auto px-6 py-3 bg-purple-600 text-white font-semibold rounded-xl hover:bg-purple-700 transition-colors">
-              Log In as Recruiter
-            </a>
-          </div>
+    <div className="min-h-screen bg-white flex items-center justify-center px-6">
+      <div className="w-full max-w-lg">
+        <div className="text-center mb-12">
+          <a href="/" className="text-lg font-medium text-black">RecruitAI</a>
+          <h1 className="text-3xl font-light text-black mt-8">Choose your role</h1>
         </div>
-      </div>
 
-      {/* Background Elements */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse"></div>
-        <div className="absolute bottom-40 -left-60 w-80 h-80 bg-pink-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse" style={{animationDelay: '2s'}}></div>
-        <div className="absolute -bottom-40 left-1/2 w-60 h-60 bg-blue-500 rounded-full mix-blend-multiply filter blur-xl opacity-50 animate-pulse" style={{animationDelay: '4s'}}></div>
+        <div className="space-y-4">
+          {/* Candidate */}
+          <a
+            href="/login/candidate"
+            className="block p-6 border border-gray-200 hover:border-black transition-colors group"
+          >
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-lg font-medium text-black mb-1">Candidate</h2>
+                <p className="text-sm text-gray-500">Practice interviews and get feedback</p>
+              </div>
+              <ArrowRight className="w-5 h-5 text-gray-300 group-hover:text-black transition-colors" />
+            </div>
+          </a>
+
+          {/* Recruiter */}
+          <a
+            href="/login/recruiter"
+            className="block p-6 border border-gray-200 hover:border-black transition-colors group"
+          >
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-lg font-medium text-black mb-1">Recruiter</h2>
+                <p className="text-sm text-gray-500">Review candidates and assessments</p>
+              </div>
+              <ArrowRight className="w-5 h-5 text-gray-300 group-hover:text-black transition-colors" />
+            </div>
+          </a>
+        </div>
+
+        <div className="mt-12 text-center">
+          <a href="/" className="text-sm text-gray-400 hover:text-gray-600">
+            ← Back to home
+          </a>
+        </div>
       </div>
     </div>
   )
 }
 
-export default LoginSelector;
+export default LoginSelector
