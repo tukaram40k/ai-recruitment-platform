@@ -1,18 +1,7 @@
-import React, { createContext, useState, useEffect, ReactNode } from 'react';
+import React, { useState, useEffect, ReactNode } from 'react';
 import { User, LoginCredentials, RegisterData } from '../types';
 import api from '../services/api';
-
-export interface AuthContextType {
-  user: User | null;
-  isLoading: boolean;
-  isAuthenticated: boolean;
-  login: (credentials: LoginCredentials) => Promise<void>;
-  register: (data: RegisterData) => Promise<void>;
-  logout: () => void;
-  updateUser: (user: User) => void;
-}
-
-export const AuthContext = createContext<AuthContextType | undefined>(undefined);
+import { AuthContext } from './AuthContextDef';
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
@@ -70,4 +59,3 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     </AuthContext.Provider>
   );
 };
-
