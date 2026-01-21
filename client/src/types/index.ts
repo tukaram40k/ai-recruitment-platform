@@ -5,6 +5,8 @@ export interface User {
   role: 'ROLE_CANDIDATE' | 'ROLE_RECRUITER';
   info?: string;
   cv?: string;
+  two_factor_enabled?: boolean;
+  totp_confirmed?: boolean;
 }
 
 export interface LoginCredentials {
@@ -23,6 +25,50 @@ export interface AuthResponse {
   access_token: string;
   token_type: string;
   user: User;
+}
+
+// 2FA Response Types
+export interface TwoFactorLoginResponse {
+  requires_2fa: true;
+  session_token: string;
+  email: string;
+  message: string;
+}
+
+export interface LoginResponse {
+  requires_2fa?: boolean;
+  session_token?: string;
+  email?: string;
+  message?: string;
+  access_token?: string;
+  token_type?: string;
+  user?: User;
+}
+
+export interface TwoFactorVerifyRequest {
+  session_token: string;
+  code: string;
+}
+
+export interface TwoFactorResendResponse {
+  message: string;
+  email: string;
+}
+
+export interface Toggle2FAResponse {
+  two_factor_enabled: boolean;
+  message: string;
+}
+
+// TOTP (Google Authenticator) Types
+export interface TOTPSetupResponse {
+  secret: string;
+  qr_code: string;  // Base64 encoded QR code image
+  otpauth_url: string;
+}
+
+export interface TOTPVerifyRequest {
+  code: string;
 }
 
 export interface Interview {

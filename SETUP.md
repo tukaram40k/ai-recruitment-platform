@@ -116,6 +116,10 @@ source venv/bin/activate
 # Install dependencies
 pip install -r requirements.txt
 
+# Copy environment variables template
+cp .env.example .env
+# Edit .env to configure email settings for 2FA (see below)
+
 # Initialize database and seed data
 python init_db.py
 
@@ -125,6 +129,35 @@ uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 
 The backend will be available at: http://localhost:8000
 API documentation: http://localhost:8000/docs
+
+### Two-Factor Authentication (2FA) Email Setup
+
+The platform supports email-based two-factor authentication. To enable email sending:
+
+#### Gmail Setup
+1. Enable 2-Step Verification in your Google account
+2. Generate an App Password: Google Account → Security → App passwords
+3. Configure in `.env`:
+```env
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USER=your-email@gmail.com
+SMTP_PASSWORD=your-app-password
+SMTP_FROM_EMAIL=your-email@gmail.com
+SMTP_FROM_NAME=RecruitAI
+TWO_FACTOR_ENABLED=true
+OTP_EXPIRE_MINUTES=10
+```
+
+#### Development Mode
+If SMTP is not configured, OTP codes will be printed to the console:
+```
+[DEV MODE] OTP for user@email.com: 123456
+```
+
+#### Disabling 2FA
+- Set `TWO_FACTOR_ENABLED=false` in `.env` to disable globally
+- Users can toggle 2FA individually in Settings → Security
 
 ### 3. Frontend Setup
 
@@ -166,7 +199,10 @@ After starting the application, the following test accounts are available:
 
 ### Authentication
 - `POST /api/auth/register` - Register new user
-- `POST /api/auth/login` - Login and get JWT token
+- `POST /api/auth/login` - Login (returns 2FA session if enabled)
+- `POST /api/auth/verify-2fa` - Verify 2FA code and complete login
+- `POST /api/auth/resend-2fa` - Resend 2FA verification code
+- `POST /api/auth/toggle-2fa` - Enable/disable 2FA for user
 
 ### Candidate Endpoints
 - `GET /api/candidate/profile` - Get profile

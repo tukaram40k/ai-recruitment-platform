@@ -6,6 +6,7 @@ import LoginSelector from './pages/auth/LoginSelector.tsx'
 import Placeholder from './pages/Placeholder.tsx'
 import LoginPage from './pages/auth/LoginPage.tsx'
 import SignupPage from './pages/auth/SignupPage.tsx'
+import VerifyOTPPage from './pages/auth/VerifyOTPPage.tsx'
 import PersonalCabinet from './pages/PersonalCabinet.tsx'
 import InterviewPage from './pages/InterviewPage.tsx'
 import InterviewResultPage from './pages/InterviewResultPage.tsx'
@@ -21,6 +22,7 @@ createRoot(document.getElementById('root')!).render(
         <Route path='/login/recruiter' element={<LoginPage user_role="recruiter"/>} />
         <Route path='/signup/candidate' element={<SignupPage user_role="candidate"/>} />
         <Route path='/signup/recruiter' element={<SignupPage user_role="recruiter"/>} />
+        <Route path='/verify-otp' element={<VerifyOTPPage />} />
         <Route path='/personal-cabinet' element={<PersonalCabinet user_role="candidate"/>} />
         <Route path='/personal-cabinet/recruiter' element={<PersonalCabinet user_role="recruiter"/>} />
         <Route path='/interview/:id' element={<InterviewPage />} />

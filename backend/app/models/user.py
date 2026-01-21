@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Text, Enum
+from sqlalchemy import Column, Integer, String, Text, Enum, Boolean
 from sqlalchemy.orm import relationship
 from ..core.database import Base
 import enum
@@ -19,8 +19,13 @@ class User(Base):
     role = Column(String(50), nullable=False, default=Role.CANDIDATE.value)
     info = Column(Text, nullable=True)
     cv = Column(Text, nullable=True)
+    two_factor_enabled = Column(Boolean, default=False)  # 2FA disabled by default
+    totp_secret = Column(String(32), nullable=True)  # Secret for Google Authenticator
+    totp_confirmed = Column(Boolean, default=False)  # Whether TOTP is set up and confirmed
 
     interviews = relationship("Interview", back_populates="user")
+    two_factor_codes = relationship("TwoFactorCode", back_populates="user", cascade="all, delete-orphan")
+    two_factor_sessions = relationship("TwoFactorSession", back_populates="user", cascade="all, delete-orphan")
 
     @property
     def email_prefix(self) -> str:

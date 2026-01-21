@@ -13,6 +13,7 @@ from app.core.security import get_password_hash
 from app.models.user import User, Role
 from app.models.interview import Interview
 from app.models.job import Job
+from app.models.two_factor import TwoFactorCode, TwoFactorSession
 import json
 
 

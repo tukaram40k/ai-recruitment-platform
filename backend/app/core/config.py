@@ -20,6 +20,21 @@ class Settings(BaseSettings):
     # NVIDIA API for AI features
     NVIDIA_API_KEY: str = ""
 
+    # Email Settings for 2FA
+    SMTP_HOST: str = "smtp.gmail.com"
+    SMTP_PORT: int = 587
+    SMTP_USER: str = ""
+    SMTP_PASSWORD: str = ""
+    SMTP_FROM_EMAIL: str = ""
+    SMTP_FROM_NAME: str = "RecruitAI"
+    
+    # Resend API (alternative to SMTP)
+    RESEND_API_KEY: str = ""
+    
+    # 2FA Settings
+    OTP_EXPIRE_MINUTES: int = 10
+    TWO_FACTOR_ENABLED: bool = True
+
     # CORS - allow frontend origins
     CORS_ORIGINS: List[str] = [
         "http://localhost:3000",
