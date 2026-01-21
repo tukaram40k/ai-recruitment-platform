@@ -4,7 +4,6 @@ from enum import Enum
 
 
 class RoleEnum(str, Enum):
-    ADMIN = "ROLE_ADMIN"
     CANDIDATE = "ROLE_CANDIDATE"
     RECRUITER = "ROLE_RECRUITER"
 
