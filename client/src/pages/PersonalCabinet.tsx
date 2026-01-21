@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router'
-import { useAuth } from '../context/AuthContext'
+import { useAuth } from '../context/useAuth'
 import api from '../services/api'
 import type { Interview } from '../types'
 
@@ -20,11 +20,7 @@ const PersonalCabinet: React.FC<PersonalCabinetProps> = ({ user_role }) => {
   const { user, logout } = useAuth()
   const navigate = useNavigate()
 
-  useEffect(() => {
-    loadInterviews()
-  }, [user_role])
-
-  const loadInterviews = async () => {
+  const loadInterviews = useCallback(async () => {
     setIsLoading(true)
     try {
       if (user_role === 'candidate') {
@@ -39,7 +35,11 @@ const PersonalCabinet: React.FC<PersonalCabinetProps> = ({ user_role }) => {
     } finally {
       setIsLoading(false)
     }
-  }
+  }, [user_role])
+
+  useEffect(() => {
+    loadInterviews()
+  }, [user_role, loadInterviews])
 
   const handleCreateInterview = async (e: React.FormEvent) => {
     e.preventDefault()

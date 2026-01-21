@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { useParams, useNavigate } from 'react-router'
 import api from '../services/api'
 
@@ -18,21 +18,11 @@ const InterviewPage: React.FC = () => {
   const [isStarting, setIsStarting] = useState(true)
   const [isComplete, setIsComplete] = useState(false)
 
-  useEffect(() => {
-    if (id) {
-      startInterview()
-    }
-  }, [id])
-
-  useEffect(() => {
-    scrollToBottom()
-  }, [messages])
-
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }
 
-  const startInterview = async () => {
+  const startInterview = useCallback(async () => {
     if (!id) return
 
     setIsStarting(true)
@@ -45,7 +35,17 @@ const InterviewPage: React.FC = () => {
     } finally {
       setIsStarting(false)
     }
-  }
+  }, [id])
+
+  useEffect(() => {
+    if (id) {
+      startInterview()
+    }
+  }, [id, startInterview])
+
+  useEffect(() => {
+    scrollToBottom()
+  }, [messages])
 
   const sendMessage = async (e: React.FormEvent) => {
     e.preventDefault()

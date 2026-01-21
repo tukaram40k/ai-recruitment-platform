@@ -134,7 +134,7 @@ class ApiService {
     return this.request<InterviewDetail>(`/interview/result/${interviewId}`);
   }
 
-  async uploadCV(file: File): Promise<{ message: string; profile: any }> {
+  async uploadCV(file: File): Promise<{ message: string; profile: Partial<User> }> {
     const formData = new FormData();
     formData.append('file', file);
 
@@ -164,8 +164,8 @@ class ApiService {
     return this.request<Interview[]>(`/recruiter/interviews${query}`);
   }
 
-  async getRecruiterInterviewDetails(interviewId: number): Promise<any> {
-    return this.request<any>(`/recruiter/interviews/${interviewId}`);
+  async getRecruiterInterviewDetails(interviewId: number): Promise<InterviewDetail> {
+    return this.request<InterviewDetail>(`/recruiter/interviews/${interviewId}`);
   }
 
   async getRecruiterStats(): Promise<{

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { useParams, useNavigate } from 'react-router'
 import api from '../services/api'
 
@@ -35,13 +35,7 @@ const InterviewResultPage: React.FC = () => {
   const [error, setError] = useState<string>('')
   const [showTranscript, setShowTranscript] = useState(false)
 
-  useEffect(() => {
-    if (id) {
-      loadResult()
-    }
-  }, [id])
-
-  const loadResult = async () => {
+  const loadResult = useCallback(async () => {
     if (!id) return
 
     setIsLoading(true)
@@ -53,7 +47,13 @@ const InterviewResultPage: React.FC = () => {
     } finally {
       setIsLoading(false)
     }
-  }
+  }, [id])
+
+  useEffect(() => {
+    if (id) {
+      loadResult()
+    }
+  }, [id, loadResult])
 
   if (isLoading) {
     return (
