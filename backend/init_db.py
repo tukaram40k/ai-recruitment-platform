@@ -4,6 +4,7 @@ Run this to create tables and seed initial data.
 """
 import sys
 import os
+import subprocess
 
 # Add the app directory to the path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -15,6 +16,26 @@ from app.models.interview import Interview
 from app.models.job import Job
 from app.models.two_factor import TwoFactorCode, TwoFactorSession
 import json
+
+
+def run_migrations():
+    """Run Alembic migrations"""
+    print("Running database migrations...")
+    try:
+        result = subprocess.run(
+            ["alembic", "upgrade", "head"],
+            capture_output=True,
+            text=True,
+            cwd=os.path.dirname(os.path.abspath(__file__))
+        )
+        if result.returncode == 0:
+            print("Migrations completed successfully!")
+            if result.stdout:
+                print(result.stdout)
+        else:
+            print(f"Migration warning (may be ok if tables exist): {result.stderr}")
+    except Exception as e:
+        print(f"Migration error (continuing): {e}")
 
 
 def init_db():
@@ -157,4 +178,5 @@ def seed_data():
 
 if __name__ == "__main__":
     init_db()
+    run_migrations()
     seed_data()
