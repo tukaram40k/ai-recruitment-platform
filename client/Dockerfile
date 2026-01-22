@@ -17,13 +17,24 @@ RUN npm run build
 # Production stage with nginx
 FROM nginx:alpine
 
-# Copy custom nginx config
+# Install envsubst (part of gettext)
+RUN apk add --no-cache gettext
+
+# Copy nginx config template
+COPY nginx.conf.template /etc/nginx/conf.d/default.conf.template
+
+# Copy original nginx.conf as fallback for local docker-compose
 COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+# Copy entrypoint script
+COPY docker-entrypoint.sh /docker-entrypoint.sh
+RUN chmod +x /docker-entrypoint.sh
 
 # Copy built app
 COPY --from=build /app/dist /usr/share/nginx/html
 
-# Expose port
+# Expose port (Railway will override this with PORT env var)
 EXPOSE 80
 
-CMD ["nginx", "-g", "daemon off;"]
+# Use entrypoint for Railway (handles PORT substitution)
+ENTRYPOINT ["/docker-entrypoint.sh"]
