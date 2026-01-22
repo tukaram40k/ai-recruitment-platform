@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router'
 import { useAuth } from '../context/useAuth'
 import api from '../services/api'
-import type { Interview } from '../types'
+import type { Interview, TOTPSetupResponse } from '../types'
 
 interface PersonalCabinetProps {
   user_role: 'candidate' | 'recruiter'
@@ -12,12 +12,23 @@ const PersonalCabinet: React.FC<PersonalCabinetProps> = ({ user_role }) => {
   const [interviews, setInterviews] = useState<Interview[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [showNewInterviewModal, setShowNewInterviewModal] = useState(false)
+  const [showSettingsModal, setShowSettingsModal] = useState(false)
   const [newPosition, setNewPosition] = useState('')
   const [newCompany, setNewCompany] = useState('')
   const [isCreating, setIsCreating] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
+  
+  // TOTP Setup state
+  const [totpSetup, setTotpSetup] = useState<TOTPSetupResponse | null>(null)
+  const [totpCode, setTotpCode] = useState('')
+  const [totpError, setTotpError] = useState('')
+  const [isSettingUpTOTP, setIsSettingUpTOTP] = useState(false)
+  const [isConfirmingTOTP, setIsConfirmingTOTP] = useState(false)
+  const [isDisablingTOTP, setIsDisablingTOTP] = useState(false)
+  const [showDisableConfirm, setShowDisableConfirm] = useState(false)
+  const [disableCode, setDisableCode] = useState('')
 
-  const { user, logout } = useAuth()
+  const { user, logout, setupTOTP, confirmTOTP, disableTOTP } = useAuth()
   const navigate = useNavigate()
 
   const loadInterviews = useCallback(async () => {
@@ -68,6 +79,63 @@ const PersonalCabinet: React.FC<PersonalCabinetProps> = ({ user_role }) => {
     navigate('/')
   }
 
+  const handleSetupTOTP = async () => {
+    setIsSettingUpTOTP(true)
+    setTotpError('')
+    try {
+      const setup = await setupTOTP()
+      setTotpSetup(setup)
+    } catch {
+      setTotpError('Failed to start setup. Please try again.')
+    } finally {
+      setIsSettingUpTOTP(false)
+    }
+  }
+
+  const handleConfirmTOTP = async () => {
+    if (totpCode.length !== 6) {
+      setTotpError('Please enter a 6-digit code')
+      return
+    }
+    
+    setIsConfirmingTOTP(true)
+    setTotpError('')
+    try {
+      await confirmTOTP({ code: totpCode })
+      setTotpSetup(null)
+      setTotpCode('')
+    } catch {
+      setTotpError('Invalid code. Please try again.')
+    } finally {
+      setIsConfirmingTOTP(false)
+    }
+  }
+
+  const handleDisableTOTP = async () => {
+    if (disableCode.length !== 6) {
+      setTotpError('Please enter a 6-digit code')
+      return
+    }
+    
+    setIsDisablingTOTP(true)
+    setTotpError('')
+    try {
+      await disableTOTP({ code: disableCode })
+      setShowDisableConfirm(false)
+      setDisableCode('')
+    } catch {
+      setTotpError('Invalid code. Please try again.')
+    } finally {
+      setIsDisablingTOTP(false)
+    }
+  }
+
+  const handleCancelSetup = () => {
+    setTotpSetup(null)
+    setTotpCode('')
+    setTotpError('')
+  }
+
   const handleViewInterview = (interview: Interview) => {
     if (interview.status === 'completed') {
       navigate(`/interview/${interview.id}/result`)
@@ -106,12 +174,20 @@ const PersonalCabinet: React.FC<PersonalCabinetProps> = ({ user_role }) => {
               <p className="text-xs text-neutral-400 capitalize">{user_role}</p>
             </div>
           </div>
-          <button
-            onClick={handleLogout}
-            className="text-xs text-neutral-500 hover:text-black"
-          >
-            Logout
-          </button>
+          <div className="flex items-center gap-4">
+            <button
+              onClick={() => setShowSettingsModal(true)}
+              className="text-xs text-neutral-500 hover:text-black"
+            >
+              Settings
+            </button>
+            <button
+              onClick={handleLogout}
+              className="text-xs text-neutral-500 hover:text-black"
+            >
+              Logout
+            </button>
+          </div>
         </div>
       </header>
 
@@ -293,6 +369,206 @@ const PersonalCabinet: React.FC<PersonalCabinetProps> = ({ user_role }) => {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {showSettingsModal && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+          <div className="bg-white w-full max-w-md p-6 max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-center mb-5">
+              <h2 className="text-sm font-medium">Settings</h2>
+              <button
+                onClick={() => {
+                  setShowSettingsModal(false)
+                  handleCancelSetup()
+                  setShowDisableConfirm(false)
+                  setDisableCode('')
+                }}
+                className="text-neutral-400 hover:text-black text-lg"
+              >
+                &times;
+              </button>
+            </div>
+
+            <div className="space-y-6">
+              {/* Account Info */}
+              <div>
+                <h3 className="text-xs text-neutral-400 uppercase tracking-wide mb-3">Account</h3>
+                <div className="space-y-2">
+                  <div className="flex justify-between">
+                    <span className="text-sm text-neutral-500">Name</span>
+                    <span className="text-sm">{user?.name}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm text-neutral-500">Email</span>
+                    <span className="text-sm">{user?.email}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Security */}
+              <div className="border-t border-neutral-200 pt-5">
+                <h3 className="text-xs text-neutral-400 uppercase tracking-wide mb-3">Security</h3>
+                
+                {/* 2FA Status */}
+                <div className="mb-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium">Two-Factor Authentication</p>
+                      <p className="text-xs text-neutral-400 mt-0.5">
+                        Use Google Authenticator for extra security
+                      </p>
+                    </div>
+                    <span className={`text-xs px-2 py-1 ${
+                      user?.totp_confirmed
+                        ? 'bg-green-100 text-green-700'
+                        : 'bg-neutral-100 text-neutral-500'
+                    }`}>
+                      {user?.totp_confirmed ? 'Enabled' : 'Disabled'}
+                    </span>
+                  </div>
+                </div>
+
+                {totpError && (
+                  <div className="mb-4 p-3 border border-red-200 bg-red-50 text-sm text-red-600">
+                    {totpError}
+                  </div>
+                )}
+
+                {/* If TOTP not set up */}
+                {!user?.totp_confirmed && !totpSetup && (
+                  <button
+                    onClick={handleSetupTOTP}
+                    disabled={isSettingUpTOTP}
+                    className="w-full py-2.5 bg-black text-white text-sm hover:bg-neutral-800 disabled:bg-neutral-300"
+                  >
+                    {isSettingUpTOTP ? 'Loading...' : 'Set up Google Authenticator'}
+                  </button>
+                )}
+
+                {/* QR Code Setup */}
+                {totpSetup && (
+                  <div className="border border-neutral-200 p-4">
+                    <p className="text-sm font-medium mb-3">Scan QR Code</p>
+                    <p className="text-xs text-neutral-500 mb-4">
+                      Open Google Authenticator app and scan this QR code:
+                    </p>
+                    
+                    <div className="flex justify-center mb-4">
+                      <img 
+                        src={`data:image/png;base64,${totpSetup.qr_code}`} 
+                        alt="QR Code for Google Authenticator"
+                        className="w-48 h-48"
+                      />
+                    </div>
+
+                    <div className="mb-4 p-3 bg-neutral-50 border border-neutral-200">
+                      <p className="text-xs text-neutral-500 mb-1">Or enter this code manually:</p>
+                      <p className="text-sm font-mono tracking-wider select-all">{totpSetup.secret}</p>
+                    </div>
+
+                    <p className="text-xs text-neutral-500 mb-3">
+                      Enter the 6-digit code from the app to confirm:
+                    </p>
+
+                    <input
+                      type="text"
+                      value={totpCode}
+                      onChange={(e) => {
+                        const val = e.target.value.replace(/\D/g, '').slice(0, 6)
+                        setTotpCode(val)
+                      }}
+                      placeholder="000000"
+                      maxLength={6}
+                      className="w-full px-3 py-2.5 border border-neutral-200 text-center text-lg tracking-widest font-mono focus:outline-none focus:border-black mb-4"
+                    />
+
+                    <div className="flex gap-3">
+                      <button
+                        onClick={handleCancelSetup}
+                        className="flex-1 py-2.5 border border-neutral-200 text-sm hover:bg-neutral-50"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        onClick={handleConfirmTOTP}
+                        disabled={isConfirmingTOTP || totpCode.length !== 6}
+                        className="flex-1 py-2.5 bg-black text-white text-sm hover:bg-neutral-800 disabled:bg-neutral-300"
+                      >
+                        {isConfirmingTOTP ? 'Verifying...' : 'Confirm'}
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Disable TOTP */}
+                {user?.totp_confirmed && !showDisableConfirm && (
+                  <button
+                    onClick={() => setShowDisableConfirm(true)}
+                    className="w-full py-2.5 border border-red-200 text-red-600 text-sm hover:bg-red-50"
+                  >
+                    Disable Two-Factor Authentication
+                  </button>
+                )}
+
+                {/* Disable Confirmation */}
+                {showDisableConfirm && (
+                  <div className="border border-red-200 p-4 bg-red-50/50">
+                    <p className="text-sm font-medium text-red-700 mb-2">Disable 2FA?</p>
+                    <p className="text-xs text-neutral-500 mb-4">
+                      Enter your current authenticator code to confirm:
+                    </p>
+
+                    <input
+                      type="text"
+                      value={disableCode}
+                      onChange={(e) => {
+                        const val = e.target.value.replace(/\D/g, '').slice(0, 6)
+                        setDisableCode(val)
+                      }}
+                      placeholder="000000"
+                      maxLength={6}
+                      className="w-full px-3 py-2.5 border border-neutral-200 text-center text-lg tracking-widest font-mono focus:outline-none focus:border-black mb-4"
+                    />
+
+                    <div className="flex gap-3">
+                      <button
+                        onClick={() => {
+                          setShowDisableConfirm(false)
+                          setDisableCode('')
+                          setTotpError('')
+                        }}
+                        className="flex-1 py-2.5 border border-neutral-200 text-sm hover:bg-neutral-50"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        onClick={handleDisableTOTP}
+                        disabled={isDisablingTOTP || disableCode.length !== 6}
+                        className="flex-1 py-2.5 bg-red-600 text-white text-sm hover:bg-red-700 disabled:bg-neutral-300"
+                      >
+                        {isDisablingTOTP ? 'Disabling...' : 'Disable'}
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className="mt-6">
+              <button
+                onClick={() => {
+                  setShowSettingsModal(false)
+                  handleCancelSetup()
+                  setShowDisableConfirm(false)
+                  setDisableCode('')
+                }}
+                className="w-full py-2.5 border border-neutral-200 text-sm hover:bg-neutral-50"
+              >
+                Close
+              </button>
+            </div>
           </div>
         </div>
       )}

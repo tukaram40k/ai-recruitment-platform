@@ -10,6 +10,11 @@ import {
   InterviewMessage,
   InterviewResponse,
   StartInterviewResponse,
+  LoginResponse,
+  TwoFactorVerifyRequest,
+  Toggle2FAResponse,
+  TOTPSetupResponse,
+  TOTPVerifyRequest,
 } from '../types';
 
 // Use relative URL in production (nginx proxies to backend)
@@ -64,13 +69,45 @@ class ApiService {
   }
 
   // Auth endpoints
-  async login(credentials: LoginCredentials): Promise<AuthResponse> {
-    const response = await this.request<AuthResponse>('/auth/login', {
+  async login(credentials: LoginCredentials): Promise<LoginResponse> {
+    const response = await this.request<LoginResponse>('/auth/login', {
       method: 'POST',
       body: JSON.stringify(credentials),
     });
+    // Only set token if no 2FA required
+    if (!response.requires_2fa && response.access_token) {
+      this.setToken(response.access_token);
+    }
+    return response;
+  }
+
+  async verify2FA(data: TwoFactorVerifyRequest): Promise<AuthResponse> {
+    const response = await this.request<AuthResponse>('/auth/verify-2fa', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
     this.setToken(response.access_token);
     return response;
+  }
+
+  async setupTOTP(): Promise<TOTPSetupResponse> {
+    return this.request<TOTPSetupResponse>('/auth/setup-totp', {
+      method: 'POST',
+    });
+  }
+
+  async confirmTOTP(data: TOTPVerifyRequest): Promise<Toggle2FAResponse> {
+    return this.request<Toggle2FAResponse>('/auth/confirm-totp', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async disableTOTP(data: TOTPVerifyRequest): Promise<Toggle2FAResponse> {
+    return this.request<Toggle2FAResponse>('/auth/disable-totp', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
   }
 
   async register(data: RegisterData): Promise<AuthResponse> {

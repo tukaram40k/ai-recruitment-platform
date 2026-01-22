@@ -24,12 +24,25 @@ const LoginPage: React.FC<LoginPageProps> = ({ user_role = 'candidate' }) => {
     setError('')
 
     try {
-      await login({ email, password })
+      const response = await login({ email, password })
 
-      if (user_role === 'recruiter') {
-        navigate('/personal-cabinet/recruiter')
+      // Check if 2FA is required
+      if (response.requires_2fa && response.session_token) {
+        // Redirect to OTP verification page
+        navigate('/verify-otp', {
+          state: {
+            sessionToken: response.session_token,
+            email: response.email,
+            userRole: user_role,
+          },
+        })
       } else {
-        navigate('/personal-cabinet')
+        // No 2FA required, proceed to dashboard
+        if (user_role === 'recruiter') {
+          navigate('/personal-cabinet/recruiter')
+        } else {
+          navigate('/personal-cabinet')
+        }
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Login failed. Please try again.')

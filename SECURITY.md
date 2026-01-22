@@ -5,13 +5,14 @@ This document provides a comprehensive overview of all security measures impleme
 ## Table of Contents
 
 1. [Authentication](#authentication)
-2. [Authorization](#authorization)
-3. [Password Security](#password-security)
-4. [Token Security](#token-security)
-5. [API Security](#api-security)
-6. [Data Protection](#data-protection)
-7. [Frontend Security](#frontend-security)
-8. [Security Architecture](#security-architecture)
+2. [Two-Factor Authentication (2FA)](#two-factor-authentication-2fa)
+3. [Authorization](#authorization)
+4. [Password Security](#password-security)
+5. [Token Security](#token-security)
+6. [API Security](#api-security)
+7. [Data Protection](#data-protection)
+8. [Frontend Security](#frontend-security)
+9. [Security Architecture](#security-architecture)
 
 ---
 
@@ -39,6 +40,55 @@ The platform uses JSON Web Tokens (JWT) for stateless authentication.
 **Files:**
 - `backend/app/core/security.py` - Token creation and validation
 - `backend/app/core/config.py` - Security configuration
+
+---
+
+## Two-Factor Authentication (2FA)
+
+### Email-Based OTP Verification
+
+The platform implements two-factor authentication using one-time passwords (OTP) sent via email.
+
+**How it works:**
+1. User enters email and password on login form
+2. If credentials are valid and 2FA is enabled:
+   - Server generates a 6-digit OTP code
+   - Server creates a temporary session token
+   - OTP is sent to user's email
+   - User is redirected to OTP verification page
+3. User enters the OTP code received via email
+4. Server validates the OTP against the stored code
+5. If valid, JWT access token is issued and user is logged in
+
+**Security Features:**
+- **OTP Expiration:** 10 minutes (configurable via `OTP_EXPIRE_MINUTES`)
+- **Single Use:** OTP codes are marked as used after verification
+- **Session Tokens:** Temporary session tokens expire with OTP
+- **Secure Generation:** Cryptographically secure random OTP generation
+- **Brute Force Protection:** Invalid codes don't reveal if email exists
+
+**Database Models:**
+- `TwoFactorCode` - Stores OTP codes with expiration and usage status
+- `TwoFactorSession` - Temporary sessions for 2FA verification flow
+
+**API Endpoints:**
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/api/auth/login` | POST | Returns session token if 2FA required |
+| `/api/auth/verify-2fa` | POST | Verify OTP and get access token |
+| `/api/auth/resend-2fa` | POST | Resend OTP code to email |
+| `/api/auth/toggle-2fa` | POST | Enable/disable 2FA for user |
+
+**User Controls:**
+- Users can enable/disable 2FA in Settings → Security
+- 2FA is enabled by default for new users
+- Global toggle available via `TWO_FACTOR_ENABLED` env variable
+
+**Files:**
+- `backend/app/models/two_factor.py` - 2FA database models
+- `backend/app/services/email_service.py` - OTP email service
+- `backend/app/api/routes/auth.py` - 2FA endpoints
+- `client/src/pages/auth/VerifyOTPPage.tsx` - OTP verification UI
 
 ---
 
