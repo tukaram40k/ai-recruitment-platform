@@ -85,7 +85,7 @@ const PersonalCabinet: React.FC<PersonalCabinetProps> = ({ user_role }) => {
     try {
       const setup = await setupTOTP()
       setTotpSetup(setup)
-    } catch (error) {
+    } catch {
       setTotpError('Failed to start setup. Please try again.')
     } finally {
       setIsSettingUpTOTP(false)
@@ -104,7 +104,7 @@ const PersonalCabinet: React.FC<PersonalCabinetProps> = ({ user_role }) => {
       await confirmTOTP({ code: totpCode })
       setTotpSetup(null)
       setTotpCode('')
-    } catch (error) {
+    } catch {
       setTotpError('Invalid code. Please try again.')
     } finally {
       setIsConfirmingTOTP(false)
@@ -123,7 +123,7 @@ const PersonalCabinet: React.FC<PersonalCabinetProps> = ({ user_role }) => {
       await disableTOTP({ code: disableCode })
       setShowDisableConfirm(false)
       setDisableCode('')
-    } catch (error) {
+    } catch {
       setTotpError('Invalid code. Please try again.')
     } finally {
       setIsDisablingTOTP(false)
